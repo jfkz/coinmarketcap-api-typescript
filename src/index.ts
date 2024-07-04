@@ -229,4 +229,4 @@ const createRequest = (args: any = {}) => {
   )
 }
 
-module.exports = CoinMarketCap
+export default CoinMarketCap;

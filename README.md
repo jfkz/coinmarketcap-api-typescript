@@ -1,9 +1,9 @@
-# coinmarketcap-api
+# coinmarketcap-api-typescript
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/tiaanduplessis/coinmarketcap-api.svg)](https://greenkeeper.io/) [![npm package version](https://img.shields.io/npm/v/coinmarketcap-api.svg?style=flat-square)](https://npmjs.org/package/coinmarketcap-api)
-[![npm downloads](https://img.shields.io/npm/dm/coinmarketcap-api.svg?style=flat-square)](https://npmjs.org/package/coinmarketcap-api) [![Standard JS linter](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard) [![Codecov](https://codecov.io/gh/tiaanduplessis/coinmarketcap-api/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/tiaanduplessis/coinmarketcap-api)  [![travis ci build status](https://img.shields.io/travis/tiaanduplessis/coinmarketcap-api.svg?style=flat-square)](https://travis-ci.org/tiaanduplessis/coinmarketcap-api)  [![project license](https://img.shields.io/npm/l/coinmarketcap-api.svg?style=flat-square)](https://github.com/tiaanduplessis/coinmarketcap-api/blob/master/LICENSE) [![make a pull request](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)  
+[![Greenkeeper badge](https://badges.greenkeeper.io/jfkz/coinmarketcap-api-typescript.svg)](https://greenkeeper.io/) [![npm package version](https://img.shields.io/npm/v/coinmarketcap-api.svg?style=flat-square)](https://npmjs.org/package/coinmarketcap-api)
+[![npm downloads](https://img.shields.io/npm/dm/coinmarketcap-api.svg?style=flat-square)](https://npmjs.org/package/coinmarketcap-api) [![Standard JS linter](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard) [![Codecov](https://codecov.io/gh/jfkz/coinmarketcap-api-typescript/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/jfkz/coinmarketcap-api-typescript)  [![travis ci build status](https://img.shields.io/travis/jfkz/coinmarketcap-api-typescript.svg?style=flat-square)](https://travis-ci.org/jfkz/coinmarketcap-api-typescript)  [![project license](https://img.shields.io/npm/l/coinmarketcap-api.svg?style=flat-square)](https://github.com/jfkz/coinmarketcap-api-typescript/blob/master/LICENSE) [![make a pull request](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)  
 
-> CoinMarketCap API wrapper for node
+> CoinMarketCap API wrapper for typescript
 
 This wrapper is based on the free tier of [the CoinMarketCap Professional API](https://pro.coinmarketcap.com/api/v1#section/Introduction).
 You can get your API key [here](https://pro.coinmarketcap.com/pricing).
@@ -19,15 +19,15 @@ You can get your API key [here](https://pro.coinmarketcap.com/pricing).
 ## Install
 
 ```sh
-$ npm install coinmarketcap-api
+$ npm install coinmarketcap-api-typescript
 # OR
-$ yarn add coinmarketcap-api
+$ yarn add coinmarketcap-api-typescript
 ```
 
 ## Usage
 
 ```js
-const CoinMarketCap = require('coinmarketcap-api')
+import CoinMarketCap from 'coinmarketcap-api-typescript'
 
 const apiKey = 'api key'
 const client = new CoinMarketCap(apiKey)
@@ -196,7 +196,7 @@ Contributions are welcome!
 4.  Push to the branch: `git push origin my-new-feature`
 5.  Submit a pull request :D
 
-Or open up [a issue](https://github.com/tiaanduplessis/coinmarketcap-api/issues).
+Or open up [a issue](https://github.com/jfkz/coinmarketcap-api-typescript/issues).
 
 ## License
 
