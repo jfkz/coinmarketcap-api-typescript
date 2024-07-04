@@ -1,0 +1,73 @@
+{
+  "name": "coinmarketcap-api-typescript",
+  "version": "0.0.1",
+  "description": "CoinMarketCap API wrapper for typescript",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/jfkz/coinmarketcap-api-typescript",
+    "type": "git"
+  },
+  "homepage": "https://github.com/jfkz/coinmarketcap-api-typescript",
+  "bugs": "https://github.com/jfkz/coinmarketcap-api-typescript",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "test": "jest",
+    "test:cov": "npm run test -- --coverage",
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "lint": "standard --fix ./*.js",
+    "start": "npm run test",
+    "pretest": "npm run lint",
+    "docs": "npm run docs:readme && npm run docs:html",
+    "docs:readme": "documentation readme index.js --section=API",
+    "docs:html": "documentation build index.js -f html -o docs"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "./test.js"
+    ]
+  },
+  "author": "mike",
+  "contributors": [
+    "Abhinav Kasamsetty",
+    "Tiaan du Plessis"
+  ],
+  "devDependencies": {
+    "@types/node-fetch": "^2.6.11",
+    "@types/qs": "^6.9.15",
+    "documentation": "12.0.2",
+    "dotenv": "7.0.0",
+    "husky": "3.0.0",
+    "jest": "24.8.0",
+    "jest-chain": "1.1.2",
+    "jest-extended": "^0.11.2",
+    "standard": "14.1.0"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.0",
+    "qs": "^6.7.0",
+    "typescript": "^5.5.3"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
+  },
+  "keywords": [
+    "api",
+    "wrapper",
+    "coinmarketcap",
+    "bitcoin",
+    "cryptocurrency",
+    "ethereum"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  }
+}
