@@ -37,20 +37,29 @@
     "Tiaan du Plessis"
   ],
   "devDependencies": {
+    "@types/node": "^18.16.0",
     "@types/node-fetch": "^2.6.11",
     "@types/qs": "^6.9.15",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
     "documentation": "12.0.2",
     "dotenv": "7.0.0",
-    "husky": "3.0.0",
+    "eslint": "^8.24.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.3.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.0.1",
+    "husky": "^3.0.0",
     "jest": "24.8.0",
     "jest-chain": "1.1.2",
     "jest-extended": "^0.11.2",
-    "standard": "14.1.0"
+    "lint-staged": "^15.2.7",
+    "typescript": "^5.5.3"
   },
   "dependencies": {
     "node-fetch": "^2.6.0",
-    "qs": "^6.7.0",
-    "typescript": "^5.5.3"
+    "qs": "^6.7.0"
   },
   "standard": {
     "env": [
@@ -69,5 +78,11 @@
     "hooks": {
       "pre-commit": "npm run lint"
     }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "eslint --ext .ts --fix"
+    ]
   }
 }
