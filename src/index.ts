@@ -62,9 +62,10 @@ class CoinMarketCap {
       limit?: number;
       symbol?: string | string[];
       sort?: string;
+      aux?: string;
     } = {},
   ) {
-    let { listingStatus, start, limit, symbol, sort } = args;
+    let { listingStatus, start, limit, symbol, sort, aux } = args;
 
     if (symbol instanceof Array) {
       symbol = symbol.join(',');
@@ -74,7 +75,7 @@ class CoinMarketCap {
       fetcher: this.fetcher,
       url: `${this.url}/cryptocurrency/map`,
       config: this.config,
-      query: { listing_status: listingStatus, start, limit, symbol, sort },
+      query: { listing_status: listingStatus, start, limit, symbol, sort, aux },
     });
   }
 
@@ -95,7 +96,7 @@ class CoinMarketCap {
    */
   async getMetadata(
     args: {
-      id?: string | string[];
+      id?: string | string[] | number | number[];
       symbol?: string | string[];
     } = {},
   ) {
@@ -232,7 +233,7 @@ class CoinMarketCap {
   }
 }
 
-const sanitizeIdAndSymbol = (id?: string | string[], symbol?: string | string[]) => {
+const sanitizeIdAndSymbol = (id?: string | string[] | number | number[], symbol?: string | string[]) => {
   if (id && symbol) {
     throw new Error('ID and symbol cannot be passed in at the same time.');
   }
