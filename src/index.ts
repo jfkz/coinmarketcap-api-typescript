@@ -1,15 +1,13 @@
-'use strict'
+import fetch from 'node-fetch';
+import qs from 'qs';
 
-import fetch from 'node-fetch'
-import qs from 'qs'
-
-const BASE_URL = 'https://pro-api.coinmarketcap.com'
+const BASE_URL = 'https://pro-api.coinmarketcap.com';
 
 class CoinMarketCap {
-  private readonly apiKey: string
-  private readonly config: object
-  private readonly fetcher: Function
-  private readonly url: string
+  private readonly apiKey: string;
+  private readonly config: object;
+  private readonly fetcher: (url: fetch.RequestInfo, init?: fetch.RequestInit) => Promise<fetch.Response>;
+  private readonly url: string;
   /**
    *
    * @param {String} apiKey API key for accessing the CoinMarketCap API
@@ -19,20 +17,24 @@ class CoinMarketCap {
    * @param {Object=} options.config = Configuration for fetch request
    *
    */
-  constructor (apiKey: string, { version = 'v1', fetcher = fetch, config = {} } = {}) {
-    this.apiKey = apiKey
-    this.config = Object.assign({}, {
-      method: 'GET',
-      headers: {
-        'X-CMC_PRO_API_KEY': this.apiKey,
-        Accept: 'application/json',
-        'Accept-Charset': 'utf-8',
-        'Accept-Encoding': 'deflate, gzip'
-      }
-    }, config)
+  constructor(apiKey: string, { version = 'v1', fetcher = fetch, config = {} } = {}) {
+    this.apiKey = apiKey;
+    this.config = Object.assign(
+      {},
+      {
+        method: 'GET',
+        headers: {
+          'X-CMC_PRO_API_KEY': this.apiKey,
+          Accept: 'application/json',
+          'Accept-Charset': 'utf-8',
+          'Accept-Encoding': 'deflate, gzip',
+        },
+      },
+      config,
+    );
 
-    this.fetcher = fetcher
-    this.url = `${BASE_URL}/${version}`
+    this.fetcher = fetcher;
+    this.url = `${BASE_URL}/${version}`;
   }
 
   /**
@@ -53,19 +55,19 @@ class CoinMarketCap {
    * client.getIdMap({symbol: ['BTC', 'ETH']}).then(console.log).catch(console.error)
    * client.getIdMap({sort: 'cmc_rank'}).then(console.log).catch(console.error)
    */
-  getIdMap (args: any = {}) {
-    let { listingStatus, start, limit, symbol, sort } = args
+  getIdMap(args: any = {}) {
+    let { listingStatus, start, limit, symbol, sort } = args;
 
     if (symbol instanceof Array) {
-      symbol = symbol.join(',')
+      symbol = symbol.join(',');
     }
 
     return createRequest({
       fetcher: this.fetcher,
       url: `${this.url}/cryptocurrency/map`,
       config: this.config,
-      query: { listing_status: listingStatus, start, limit, symbol, sort }
-    })
+      query: { listing_status: listingStatus, start, limit, symbol, sort },
+    });
   }
 
   /**
@@ -83,13 +85,13 @@ class CoinMarketCap {
    * client.getMetadata({symbol: 'BTC,ETH'}).then(console.log).catch(console.error)
    * client.getMetadata({symbol: ['BTC', 'ETH']}).then(console.log).catch(console.error)
    */
-  getMetadata (args: any = {}) {
+  getMetadata(args: any = {}) {
     return createRequest({
       fetcher: this.fetcher,
       url: `${this.url}/cryptocurrency/info`,
       config: this.config,
-      query: sanitizeIdAndSymbol(args.id, args.symbol)
-    })
+      query: sanitizeIdAndSymbol(args.id, args.symbol),
+    });
   }
 
   /**
@@ -112,29 +114,29 @@ class CoinMarketCap {
    * client.getTickers({start: 0, limit: 5}).then(console.log).catch(console.error)
    * client.getTickers({sort: 'name'}).then(console.log).catch(console.error)
    */
-  getTickers (args: any = {}) {
-    let { start, limit, convert, sort, sortDir, cryptocurrencyType } = args
+  getTickers(args: any = {}) {
+    let { start, limit, convert, sort, sortDir, cryptocurrencyType } = args;
 
     // eslint-disable-next-line
     if (start && (limit == 0)) {
-      throw new Error('Start and limit = 0 cannot be passed in at the same time.')
+      throw new Error('Start and limit = 0 cannot be passed in at the same time.');
     }
 
     // eslint-disable-next-line
     if (limit == 0) {
-      limit = 5000
+      limit = 5000;
     }
 
     if (convert && convert instanceof Array) {
-      convert = convert.join(',')
+      convert = convert.join(',');
     }
 
     return createRequest({
       fetcher: this.fetcher,
       url: `${this.url}/cryptocurrency/listings/latest`,
       config: this.config,
-      query: { start, limit, convert, sort, sort_dir: sortDir, cryptocurrency_type: cryptocurrencyType }
-    })
+      query: { start, limit, convert, sort, sort_dir: sortDir, cryptocurrency_type: cryptocurrencyType },
+    });
   }
 
   /**
@@ -152,20 +154,20 @@ class CoinMarketCap {
    * client.getQuotes({symbol: 'BTC,ETH'}).then(console.log).catch(console.error)
    * client.getQuotes({symbol: ['BTC', 'ETH']}).then(console.log).catch(console.error)
    */
-  getQuotes (args: any = {}) {
-    let convert = args.convert
-    const { id, symbol } = sanitizeIdAndSymbol(args.id, args.symbol)
+  getQuotes(args: any = {}) {
+    let convert = args.convert;
+    const { id, symbol } = sanitizeIdAndSymbol(args.id, args.symbol);
 
     if (convert instanceof Array) {
-      convert = convert.join(',')
+      convert = convert.join(',');
     }
 
     return createRequest({
       fetcher: this.fetcher,
       url: `${this.url}/cryptocurrency/quotes/latest`,
       config: this.config,
-      query: { id, symbol, convert }
-    })
+      query: { id, symbol, convert },
+    });
   }
 
   /**
@@ -179,54 +181,52 @@ class CoinMarketCap {
    * client.getGlobal('GBP').then(console.log).catch(console.error)
    * client.getGlobal({convert: 'GBP'}).then(console.log).catch(console.error)
    */
-  getGlobal (convert: any) {
+  getGlobal(convert: any) {
     if (typeof convert === 'string') {
-      convert = { convert: convert.toUpperCase() }
+      convert = { convert: convert.toUpperCase() };
     }
 
     if (convert instanceof Array) {
-      convert = { convert: convert.map(currency => currency.toUpperCase()) }
+      convert = { convert: convert.map((currency) => currency.toUpperCase()) };
     }
 
     if (convert && convert.convert instanceof Array) {
-      convert.convert = convert.convert.join(',')
+      convert.convert = convert.convert.join(',');
     }
 
     return createRequest({
       fetcher: this.fetcher,
       url: `${this.url}/global-metrics/quotes/latest`,
       config: this.config,
-      query: convert
-    })
+      query: convert,
+    });
   }
 }
 
 const sanitizeIdAndSymbol = (id: string | string[], symbol: string | string[]) => {
   if (id && symbol) {
-    throw new Error('ID and symbol cannot be passed in at the same time.')
+    throw new Error('ID and symbol cannot be passed in at the same time.');
   }
 
   if (!id && !symbol) {
-    throw new Error('Either ID or symbol is required to be passed in.')
+    throw new Error('Either ID or symbol is required to be passed in.');
   }
 
   if (id instanceof Array) {
-    id = id.join(',')
+    id = id.join(',');
   }
 
   if (symbol instanceof Array) {
-    symbol = symbol.join(',')
+    symbol = symbol.join(',');
   }
 
-  return { id, symbol }
-}
+  return { id, symbol };
+};
 
 const createRequest = (args: any = {}) => {
-  const { url, config, query, fetcher } = args
+  const { url, config, query, fetcher } = args;
 
-  return fetcher(`${url}${query ? `?${qs.stringify(query)}` : ''}`, config).then((res: any) =>
-    res.json()
-  )
-}
+  return fetcher(`${url}${query ? `?${qs.stringify(query)}` : ''}`, config).then((res: any) => res.json());
+};
 
 export default CoinMarketCap;
