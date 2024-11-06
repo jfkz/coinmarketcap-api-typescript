@@ -55,18 +55,27 @@ class CoinMarketCap {
    * client.getIdMap({symbol: ['BTC', 'ETH']}).then(console.log).catch(console.error)
    * client.getIdMap({sort: 'cmc_rank'}).then(console.log).catch(console.error)
    */
-  getIdMap(args: any = {}) {
-    let { listingStatus, start, limit, symbol, sort } = args;
+  async getIdMap(
+    args: {
+      listingStatus?: string;
+      start?: number;
+      limit?: number;
+      symbol?: string | string[];
+      sort?: string;
+      aux?: string;
+    } = {},
+  ) {
+    let { listingStatus, start, limit, symbol, sort, aux } = args;
 
     if (symbol instanceof Array) {
       symbol = symbol.join(',');
     }
 
-    return createRequest({
+    return await createRequest({
       fetcher: this.fetcher,
       url: `${this.url}/cryptocurrency/map`,
       config: this.config,
-      query: { listing_status: listingStatus, start, limit, symbol, sort },
+      query: { listing_status: listingStatus, start, limit, symbol, sort, aux },
     });
   }
 
@@ -85,8 +94,13 @@ class CoinMarketCap {
    * client.getMetadata({symbol: 'BTC,ETH'}).then(console.log).catch(console.error)
    * client.getMetadata({symbol: ['BTC', 'ETH']}).then(console.log).catch(console.error)
    */
-  getMetadata(args: any = {}) {
-    return createRequest({
+  async getMetadata(
+    args: {
+      id?: string | string[] | number | number[];
+      symbol?: string | string[];
+    } = {},
+  ) {
+    return await createRequest({
       fetcher: this.fetcher,
       url: `${this.url}/cryptocurrency/info`,
       config: this.config,
@@ -114,16 +128,23 @@ class CoinMarketCap {
    * client.getTickers({start: 0, limit: 5}).then(console.log).catch(console.error)
    * client.getTickers({sort: 'name'}).then(console.log).catch(console.error)
    */
-  getTickers(args: any = {}) {
+  async getTickers(
+    args: {
+      start?: number;
+      limit?: number;
+      convert?: string | string[];
+      sort?: string;
+      sortDir?: string;
+      cryptocurrencyType?: 'all' | 'coins' | 'tokens';
+    } = {},
+  ) {
     let { start, limit, convert, sort, sortDir, cryptocurrencyType } = args;
 
-    // eslint-disable-next-line
-    if (start && (limit == 0)) {
+    if (start && limit === 0) {
       throw new Error('Start and limit = 0 cannot be passed in at the same time.');
     }
 
-    // eslint-disable-next-line
-    if (limit == 0) {
+    if (limit === 0) {
       limit = 5000;
     }
 
@@ -131,7 +152,7 @@ class CoinMarketCap {
       convert = convert.join(',');
     }
 
-    return createRequest({
+    return await createRequest({
       fetcher: this.fetcher,
       url: `${this.url}/cryptocurrency/listings/latest`,
       config: this.config,
@@ -154,7 +175,13 @@ class CoinMarketCap {
    * client.getQuotes({symbol: 'BTC,ETH'}).then(console.log).catch(console.error)
    * client.getQuotes({symbol: ['BTC', 'ETH']}).then(console.log).catch(console.error)
    */
-  getQuotes(args: any = {}) {
+  async getQuotes(
+    args: {
+      id?: string | string[];
+      symbol?: string | string[];
+      convert?: string | string[];
+    } = {},
+  ) {
     let convert = args.convert;
     const { id, symbol } = sanitizeIdAndSymbol(args.id, args.symbol);
 
@@ -162,7 +189,7 @@ class CoinMarketCap {
       convert = convert.join(',');
     }
 
-    return createRequest({
+    return await createRequest({
       fetcher: this.fetcher,
       url: `${this.url}/cryptocurrency/quotes/latest`,
       config: this.config,
@@ -181,29 +208,32 @@ class CoinMarketCap {
    * client.getGlobal('GBP').then(console.log).catch(console.error)
    * client.getGlobal({convert: 'GBP'}).then(console.log).catch(console.error)
    */
-  getGlobal(convert: any) {
+  async getGlobal(convert: string | string[] = 'USD') {
+    const query: { convert: string | string[] } = {
+      convert: convert instanceof Array ? convert.join(',') : convert,
+    };
     if (typeof convert === 'string') {
-      convert = { convert: convert.toUpperCase() };
+      query.convert = convert.toUpperCase();
     }
 
     if (convert instanceof Array) {
-      convert = { convert: convert.map((currency) => currency.toUpperCase()) };
+      query.convert = convert.map((currency) => currency.toUpperCase());
     }
 
-    if (convert && convert.convert instanceof Array) {
-      convert.convert = convert.convert.join(',');
-    }
+    // if (convert && convert.convert instanceof Array) {
+    //   query.convert = convert.convert.join(',');
+    // }
 
-    return createRequest({
+    return await createRequest({
       fetcher: this.fetcher,
       url: `${this.url}/global-metrics/quotes/latest`,
       config: this.config,
-      query: convert,
+      query,
     });
   }
 }
 
-const sanitizeIdAndSymbol = (id: string | string[], symbol: string | string[]) => {
+const sanitizeIdAndSymbol = (id?: string | string[] | number | number[], symbol?: string | string[]) => {
   if (id && symbol) {
     throw new Error('ID and symbol cannot be passed in at the same time.');
   }
@@ -223,10 +253,15 @@ const sanitizeIdAndSymbol = (id: string | string[], symbol: string | string[]) =
   return { id, symbol };
 };
 
-const createRequest = (args: any = {}) => {
+const createRequest = async (args: {
+  url: string;
+  config: object;
+  query: object;
+  fetcher: (url: fetch.RequestInfo, init?: fetch.RequestInit) => Promise<fetch.Response>;
+}) => {
   const { url, config, query, fetcher } = args;
 
-  return fetcher(`${url}${query ? `?${qs.stringify(query)}` : ''}`, config).then((res: any) => res.json());
+  return await fetcher(`${url}${query ? `?${qs.stringify(query)}` : ''}`, config).then((res: any) => res.json());
 };
 
 export default CoinMarketCap;
