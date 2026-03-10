@@ -28,7 +28,11 @@
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "./test.js"
+      "./jest.setup.js"
+    ],
+    "testMatch": [
+      "**/test.js",
+      "**/__tests__/**/*.test.js"
     ]
   },
   "author": "mike",
